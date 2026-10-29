@@ -16,7 +16,7 @@
     "test": "npm run build:test && node --test dist-test/test/env.spec.js dist-test/test/health.spec.js dist-test/test/http.spec.js",
     "test:db": "npm run build:test && node --test dist-test/test/database.integration.spec.js",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node scripts/assert-no-editor.mjs && drizzle-kit migrate",
     "db:check": "drizzle-kit check"
   },
   "dependencies": {

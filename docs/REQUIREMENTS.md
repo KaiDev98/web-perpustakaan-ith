@@ -45,7 +45,7 @@ Modul admin bernama **DAFTAR PEMOHON**. Kolom: Nama, NIM, Prodi, No. WA, Email, 
 
 ## Admin dan kualitas
 
-- Role awal `SUPERADMIN`, `ADMIN`, `EDITOR`, tanpa registrasi publik. Superadmin pertama dibuat melalui bootstrap operator terbatas.
+- Hanya role `SUPERADMIN` dan `ADMIN`, tanpa registrasi publik atau penambahan akun melalui website. Dua akun awal dibuat melalui bootstrap operator terbatas.
 - Seluruh endpoint admin mewajibkan autentikasi, pemeriksaan izin, validasi, penanganan error, dan audit untuk aksi penting. Data pribadi permohonan hanya untuk role dengan izin.
 - Konten, menu, slide, media, sumber digital, pengaturan kontak, program studi, dan pengguna dikelola sesuai matriks izin pada `SECURITY.md`.
 - Website responsif dan dapat digunakan dengan keyboard, label formulir jelas, fokus terlihat, pesan validasi mudah dipahami; uji aksesibilitas sebelum rilis.

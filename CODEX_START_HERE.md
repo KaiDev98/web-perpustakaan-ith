@@ -10,7 +10,7 @@
 
 ## Persetujuan 29 Oktober 2026
 
-Pengguna menyetujui commit/push **hanya hasil Fase 0** dan implementasi fondasi backend Fase 1. Target Git: commit README minimal pada `main`, branch `Niyato` dari baseline itu, commit dokumen Fase 0 di `Niyato`, push kedua branch, lalu verifikasi melalui GitHub. Keadaan aktual selalu diperiksa dengan Git/GitHub; bagian audit di atas adalah catatan historis. Perubahan Fase 1 tidak boleh di-commit/push tanpa persetujuan baru.
+Pengguna telah menyetujui commit/push Fase 0, Fase 1, serta pekerjaan lanjutan yang lolos pengujian. Target Git Fase 0 sudah tercapai; branch `Niyato` adalah branch pengembangan wajib. Keputusan terbaru: publik tanpa login, admin pada origin terpisah, hanya role `SUPERADMIN` dan `ADMIN`, dua akun awal lewat bootstrap CLI. Keadaan aktual selalu diperiksa dengan Git/GitHub; bagian audit di atas adalah catatan historis. Jangan force push atau merge ke `main`.
 
 ## Peta dokumen
 

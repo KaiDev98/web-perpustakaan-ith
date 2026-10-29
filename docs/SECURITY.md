@@ -17,20 +17,20 @@ Browser publik dan admin adalah klien tidak tepercaya. Reverse proxy, NestJS, My
 
 `✓` berarti diberi izin pada rancangan awal. Pemeriksaan dijalankan di server pada **setiap** endpoint admin, termasuk baca daftar/detail. SUPERADMIN tetap melewati autentikasi dan audit; role bukan jalan pintas untuk melewati guard.
 
-| Izin | SUPERADMIN | ADMIN | EDITOR |
-| --- | :---: | :---: | :---: |
-| `content.read`, `content.manage` | ✓ | ✓ | ✓ |
-| `navigation.read`, `navigation.manage` | ✓ | ✓ | ✓ |
-| `resources.read`, `resources.manage` | ✓ | ✓ | ✓ |
-| `slides.read`, `slides.manage` | ✓ | ✓ | ✓ |
-| `media.read`, `media.manage` | ✓ | ✓ | ✓ |
-| `requests.literacy.read`, `requests.literacy.status` | ✓ | ✓ | — |
-| `requests.clearance.read`, `requests.clearance.status` | ✓ | ✓ | — |
-| `settings.read`, `settings.manage` (kontak admin) | ✓ | ✓ | — |
-| `study_programs.read`, `study_programs.manage` | ✓ | ✓ | — |
-| `users.read`, `users.manage` | ✓ | — | — |
-| `audit.read` | ✓ | — | — |
-| `admin.me`, `auth.logout` (akun sendiri) | ✓ | ✓ | ✓ |
+| Izin | SUPERADMIN | ADMIN |
+| --- | :---: | :---: |
+| `content.read`, `content.manage` | ✓ | ✓ |
+| `navigation.read`, `navigation.manage` | ✓ | ✓ |
+| `resources.read`, `resources.manage` | ✓ | ✓ |
+| `slides.read`, `slides.manage` | ✓ | ✓ |
+| `media.read`, `media.manage` | ✓ | ✓ |
+| `requests.literacy.read`, `requests.literacy.status` | ✓ | ✓ |
+| `requests.clearance.read`, `requests.clearance.status` | ✓ | ✓ |
+| `settings.read`, `settings.manage` (kontak admin) | ✓ | ✓ |
+| `study_programs.read`, `study_programs.manage` | ✓ | ✓ |
+| `users.read`, `users.manage` | ✓ | — |
+| `audit.read` | ✓ | — |
+| `admin.me`, `auth.logout` (akun sendiri) | ✓ | ✓ |
 
 `auth.login` hanya untuk akun admin aktif yang valid; `auth/csrf` hanya pada origin admin. Tidak ada endpoint registrasi. Pengelolaan pengguna tidak boleh membiarkan penghapusan/nonaktif superadmin aktif terakhir, promosi role tanpa izin `users.manage`, atau perubahan kredensial tanpa audit. Role/izin adalah allowlist di kode dan diuji; mengubah matriks memerlukan keputusan produk.
 
@@ -40,7 +40,7 @@ Browser publik dan admin adalah klien tidak tepercaya. Reverse proxy, NestJS, My
 | --- | --- | --- |
 | Brute force / credential stuffing admin | Pengambilalihan akun | Argon2id, rate limit per akun/IP dengan respons generik, pencatatan gagal login tanpa sandi, monitoring, sesi dicabut saat akun dinonaktifkan; uji burst dan lockout yang tidak mudah disalahgunakan. |
 | Pencurian/fiksasi sesi, CSRF | Aksi admin tanpa izin | Token sesi acak opaque, hash di DB, rotasi saat login, idle/absolute expiry, cookie `__Host-`, `Secure`, `HttpOnly`, `SameSite=Lax`, tanpa `Domain`; CSRF token dan pemeriksaan Origin/Fetch Metadata untuk semua mutasi termasuk login; uji cross-origin dan logout. |
-| IDOR/BOLA pada ID permohonan | Kebocoran PII / perubahan status | Session + permission guard sebelum query, proyeksi DTO sesuai izin, tidak ada detail publik; uji role EDITOR/anonim dan ID lain untuk list/detail/PATCH. |
+| IDOR/BOLA pada ID permohonan | Kebocoran PII / perubahan status | Session + permission guard sebelum query, proyeksi DTO sesuai izin, tidak ada detail publik; uji anonim dan ID lain untuk list/detail/PATCH. |
 | SQL injection dan pencarian liar | Baca/ubah data, beban DB | Query terparameterisasi Drizzle, allowlist sort/filter, panjang `q` dan pagination terbatas; uji input metacharacter dan beban. |
 | Stored/reflected XSS melalui konten, judul, tautan | Pembajakan admin/pengunjung | Validasi dan sanitasi HTML terbit, escaping di React, CSP sesuai aset, URL hanya path internal/HTTPS yang diizinkan, `rel=noopener noreferrer` untuk tautan eksternal; uji payload HTML/URL. |
 | Spam/bot pada formulir publik | DB penuh, gangguan layanan | Rate limit bertingkat IP/rute, batas body, honeypot dan pemeriksaan waktu yang proporsional, monitoring, tantangan tambahan hanya bila perlu; uji pengiriman berulang dan shared-network agar tidak memblokir sah secara berlebihan. |

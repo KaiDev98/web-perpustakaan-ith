@@ -8,6 +8,13 @@
       "when": 1793206384810,
       "tag": "0000_amusing_the_hood",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1793240413906,
+      "tag": "0001_restrict_admin_roles",
+      "breakpoints": true
     }
   ]
 }

@@ -15,7 +15,7 @@ export const users = mysqlTable('users', {
   email: varchar('email', { length: 254 }).notNull(),
   displayName: varchar('display_name', { length: 160 }).notNull(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  role: mysqlEnum('role', ['SUPERADMIN', 'ADMIN', 'EDITOR']).notNull(),
+  role: mysqlEnum('role', ['SUPERADMIN', 'ADMIN']).notNull(),
   isActive: boolean('is_active').notNull().default(true),
   createdAt: createdAt(),
   updatedAt: updatedAt(),

@@ -14,6 +14,8 @@ Fase 0 telah di-commit dan dipush pada `main` (baseline README) dan `Niyato` (do
 | **5 — Frontend dan integrasi** | Website publik dan dashboard Next.js JavaScript/CSS, responsif, aksesibilitas, integrasi API | Uji browser, keyboard/screen reader, alur sukses/gagal, cache, CSRF, form tanpa akun pemustaka. |
 | **6 — Deployment** | Domain/TLS, konfigurasi produksi, migrasi aman, backup, monitoring, runbook recovery | Uji staging, restore backup, pemeriksaan keamanan, review konfigurasi dan persetujuan rilis. |
 
+Keputusan terbaru mempercepat fondasi frontend setelah backend autentikasi Fase 2A, sebelum seluruh modul konten dan formulir selesai. Website publik tetap tanpa login; admin memakai origin terpisah. Docker ditunda selama development, dan MySQL 8.4 lokal menjadi lingkungan integration test.
+
 ## Urutan Fase 1 yang direkomendasikan
 
 1. Kunci versi Node.js LTS, NestJS, Drizzle/mysql2, dan MySQL patch 8.4 LTS yang kompatibel berdasarkan dokumentasi saat implementasi; catat lockfile dan dukungan platform.

@@ -101,7 +101,7 @@ Pencarian `q` dibatasi panjangnya dan memakai query terparameterisasi; tidak ada
 | `GET/POST /admin/media`, `GET /admin/media/:id` | `media.read` / `media.manage` | Metadata/unggah panduan dan gambar; batas ukuran dan tipe |
 | `GET/PATCH /admin/settings` | `settings.read` / `settings.manage` | Kontak admin dan identitas publik; hanya allowlist field |
 | `GET/POST /admin/study-programs`, `PATCH /admin/study-programs/:id` | `study_programs.read` / `study_programs.manage` | Master data; nonaktifkan, jangan hapus jika dirujuk |
-| `GET/POST /admin/users`, `PATCH /admin/users/:id` | `users.read` / `users.manage` | Akun admin, role, aktif/nonaktif; tanpa registrasi publik |
+| `GET /admin/users`, `PATCH /admin/users/:id` | `users.read` / `users.manage` | Dua akun awal saja; pengaturan keamanan/kredensial khusus SUPERADMIN, tanpa endpoint penambahan akun |
 | `GET /admin/audit-logs` | `audit.read` | Audit aman tanpa payload PII |
 
 Semua `POST/PATCH/DELETE` admin membutuhkan CSRF dan audit aksi penting. Endpoint `DELETE` tidak boleh menghapus data historis permohonan atau jejak audit. Detail payload konten/menu/media ditetapkan sebagai DTO/OpenAPI pada fase modul terkait; izin dan batas data di atas adalah kontrak awal.
