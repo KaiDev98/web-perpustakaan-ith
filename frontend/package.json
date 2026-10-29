@@ -1,0 +1,23 @@
+{
+  "name": "@ith/library-frontends",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev:public": "next dev apps/public --hostname localhost --port 3000",
+    "dev:admin": "next dev apps/admin --hostname 127.0.0.1 --port 3002",
+    "build:public": "next build apps/public",
+    "build:admin": "next build apps/admin",
+    "lint": "eslint apps/public/app apps/admin/app apps/admin/lib apps/admin/next.config.mjs --ext .js,.jsx,.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.3"
+  }
+}

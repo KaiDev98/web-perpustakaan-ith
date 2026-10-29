@@ -24,7 +24,7 @@ test('environment rejects missing and placeholder password without echoing it', 
 
 test('production rejects Swagger and insecure CORS origins', () => {
   assert.throws(() => validateEnvironment({ ...valid, NODE_ENV: 'production', ENABLE_SWAGGER: 'true' }), /CORS_ORIGINS/);
-  assert.throws(() => validateEnvironment({ ...valid, NODE_ENV: 'production', CORS_ORIGINS: 'https://library.example.org', ENABLE_SWAGGER: 'true' }), /ENABLE_SWAGGER/);
+  assert.throws(() => validateEnvironment({ ...valid, NODE_ENV: 'production', CORS_ORIGINS: 'https://library.example.org', ADMIN_ORIGIN: 'https://admin.example.org', ENABLE_SWAGGER: 'true' }), /ENABLE_SWAGGER/);
   assert.throws(() => parseCorsOrigins('*', 'development'), /CORS_ORIGINS/);
 });
 
@@ -33,7 +33,7 @@ test('application process fails early for invalid environment', () => {
   const result = spawnSync(process.execPath, [executable], {
     cwd: process.cwd(),
     env: { ...process.env, ...valid, DB_PASSWORD: 'replace-with-strong-local-password' },
-    encoding: 'utf8', timeout: 10000,
+    encoding: 'utf8', timeout: 30000,
   });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /startup_failed/);

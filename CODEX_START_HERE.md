@@ -10,7 +10,9 @@
 
 ## Persetujuan 29 Oktober 2026
 
-Pengguna telah menyetujui commit/push Fase 0, Fase 1, serta pekerjaan lanjutan yang lolos pengujian. Target Git Fase 0 sudah tercapai; branch `Niyato` adalah branch pengembangan wajib. Keputusan terbaru: publik tanpa login, admin pada origin terpisah, hanya role `SUPERADMIN` dan `ADMIN`, dua akun awal lewat bootstrap CLI. Keadaan aktual selalu diperiksa dengan Git/GitHub; bagian audit di atas adalah catatan historis. Jangan force push atau merge ke `main`.
+Pengguna telah menyetujui commit/push Fase 0 dan Fase 1; keduanya sudah ada di remote. Branch `Niyato` adalah branch pengembangan wajib. Keputusan terbaru: publik tanpa login, admin pada origin terpisah, hanya role `SUPERADMIN` dan `ADMIN`, dua akun awal lewat bootstrap CLI. Pengguna menyetujui commit/push checkpoint Fase 2A/2B setelah pemeriksaan akhir. Perubahan Fase 3 tetap lokal sampai persetujuan terpisah. Bagian audit di atas adalah catatan historis. Jangan force push atau merge ke `main`.
+
+Revisi izin terbaru membatasi `ADMIN` pada ringkasan dan pemrosesan dua jenis permohonan. Seluruh pengelolaan konten/website, akun, dan audit log khusus `SUPERADMIN`. Revisi ini termasuk dalam checkpoint Fase 2A/2B yang disetujui pengguna.
 
 ## Peta dokumen
 

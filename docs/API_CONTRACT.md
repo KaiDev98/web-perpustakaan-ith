@@ -1,6 +1,6 @@
 # Kontrak REST API v1
 
-Status: **hanya `GET /health` dan `GET /ready` sudah diimplementasikan pada Fase 1**. Seluruh endpoint bisnis/admin di bawah masih kontrak rencana, bukan route aktif. Base path `/api/v1`; JSON UTF-8 dan tanggal ISO 8601 UTC. OpenAPI/Swagger saat ini hanya memuat dua route aktif. Global ValidationPipe memakai `whitelist` + `forbidNonWhitelisted`; DTO bisnis baru dikerjakan pada fase terkait.
+Status: Fase 1 mengaktifkan `GET /health` dan `GET /ready`; Fase 2A mengaktifkan `GET /auth/csrf`, `POST /auth/login`, `POST /auth/logout`, `GET /admin/me`, dan `POST /admin/users/:id/password-reset`. Endpoint bisnis lainnya masih kontrak rencana. Base path `/api/v1`; JSON UTF-8 dan tanggal ISO 8601 UTC. Global ValidationPipe memakai `whitelist` + `forbidNonWhitelisted`; DTO bisnis baru dikerjakan pada fase terkait.
 
 ## Format umum
 
@@ -74,8 +74,9 @@ Semua field wajib. Nama maksimal 160 karakter, NIM maksimal 32 karakter dan dipe
 | `POST /auth/login` | `{ "email": "...", "password": "..." }`; rate limit dan respons gagal generik; set cookie sesi host-only |
 | `POST /auth/logout` | Memerlukan sesi dan CSRF; cabut sesi, hapus cookie |
 | `GET /admin/me` | Profil minimal pengguna login: `id`, `display_name`, `role`, daftar izin |
+| `POST /admin/users/:id/password-reset` | Hanya SUPERADMIN, sesi + CSRF; sandi baru minimal 16 karakter, semua sesi target dicabut dan aksi diaudit |
 
-Cookie sesi `__Host-ith_admin` memakai `Secure`, `HttpOnly`, `SameSite=Lax`, `Path=/`, tanpa `Domain`. Semua method mutasi admin, termasuk login, memerlukan token CSRF pada header `X-CSRF-Token` serta pemeriksaan `Origin`/Fetch Metadata. Token tidak masuk URL/log. Pengaturan detail implementasi diuji sebelum rilis.
+Di production, cookie sesi `__Host-ith_admin` memakai `Secure`, `HttpOnly`, `SameSite=Lax`, `Path=/`, tanpa `Domain`; development lokal memakai `ith_admin` tanpa `Secure` pada HTTP loopback. Semua method mutasi admin, termasuk login, memerlukan token CSRF pada header `X-CSRF-Token` serta pemeriksaan `Origin`/Fetch Metadata. Token tidak masuk URL/log. Pengaturan detail implementasi diuji sebelum rilis.
 
 ## Admin permohonan
 
@@ -89,6 +90,8 @@ Cookie sesi `__Host-ith_admin` memakai `Secure`, `HttpOnly`, `SameSite=Lax`, `Pa
 | `PATCH /admin/clearance-requests/:id/status` | `requests.clearance.status` | Body status dua nilai; transaksi atomik |
 
 Pencarian `q` dibatasi panjangnya dan memakai query terparameterisasi; tidak ada ekspor massal pada lingkup ini. Status yang sama mengembalikan status saat ini tanpa entri riwayat baru. Riwayat pada detail memuat status sebelumnya/baru, admin pengubah, dan waktu.
+
+`SUPERADMIN` dan `ADMIN` sama-sama memiliki izin ringkasan permohonan, baca daftar/detail, serta perubahan status pada kedua modul. Setiap perubahan status harus mencatat riwayat dan audit secara atomik. Endpoint pada tabel ini masih kontrak rencana sampai controller/service terkait diterapkan.
 
 ## Admin konten dan konfigurasi
 
@@ -105,3 +108,5 @@ Pencarian `q` dibatasi panjangnya dan memakai query terparameterisasi; tidak ada
 | `GET /admin/audit-logs` | `audit.read` | Audit aman tanpa payload PII |
 
 Semua `POST/PATCH/DELETE` admin membutuhkan CSRF dan audit aksi penting. Endpoint `DELETE` tidak boleh menghapus data historis permohonan atau jejak audit. Detail payload konten/menu/media ditetapkan sebagai DTO/OpenAPI pada fase modul terkait; izin dan batas data di atas adalah kontrak awal.
+
+**Seluruh endpoint pada bagian konten dan konfigurasi hanya untuk `SUPERADMIN`.** `ADMIN` harus menerima HTTP 403 pada akses API langsung, termasuk melalui ID/URL yang dimodifikasi. Pengunjung tanpa sesi menerima HTTP 401. Navigasi frontend mengikuti daftar izin dari `GET /admin/me`.

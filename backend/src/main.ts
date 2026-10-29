@@ -25,6 +25,10 @@ export function configureApp(app: INestApplication): INestApplication {
 
   app.use(helmet({ contentSecurityPolicy: mode === 'production' ? undefined : false }));
   app.use(requestLogger);
+  app.use((request: express.Request, response: express.Response, next: express.NextFunction) => {
+    if (/^\/api\/v1\/(auth|admin)(\/|$)/.test(request.path)) response.setHeader('Cache-Control', 'no-store');
+    next();
+  });
   app.use(express.json({ limit: bodyLimit, strict: true }));
   app.use(express.urlencoded({ limit: bodyLimit, extended: false }));
   const bodyErrorHandler: ErrorRequestHandler = (error: unknown, request: RequestWithLog, response, next) => {

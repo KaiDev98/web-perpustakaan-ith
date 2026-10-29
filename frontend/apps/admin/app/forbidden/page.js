@@ -1,0 +1,1 @@
+export default function Forbidden() { return <main className="system-state"><span className="kicker">403 · AKSES DITOLAK</span><h1>Anda tidak memiliki izin.</h1><p>Hubungi SUPERADMIN bila Anda memerlukan akses yang sesuai.</p><a href="/dashboard">Kembali ke dashboard</a></main>; }

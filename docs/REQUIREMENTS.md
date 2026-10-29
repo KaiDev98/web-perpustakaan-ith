@@ -46,6 +46,7 @@ Modul admin bernama **DAFTAR PEMOHON**. Kolom: Nama, NIM, Prodi, No. WA, Email, 
 ## Admin dan kualitas
 
 - Hanya role `SUPERADMIN` dan `ADMIN`, tanpa registrasi publik atau penambahan akun melalui website. Dua akun awal dibuat melalui bootstrap operator terbatas.
+- `SUPERADMIN` mengelola konten, berita, profil, menu, sumber digital, media, slider, panduan, layanan, pengaturan, akun, audit log, dan kedua jenis permohonan. `ADMIN` hanya melihat ringkasan/daftar/detail permohonan Literasi Informasi dan Bebas Pustaka serta mengubah statusnya antara `PROSES` dan `SELESAI`.
 - Seluruh endpoint admin mewajibkan autentikasi, pemeriksaan izin, validasi, penanganan error, dan audit untuk aksi penting. Data pribadi permohonan hanya untuk role dengan izin.
 - Konten, menu, slide, media, sumber digital, pengaturan kontak, program studi, dan pengguna dikelola sesuai matriks izin pada `SECURITY.md`.
 - Website responsif dan dapat digunakan dengan keyboard, label formulir jelas, fokus terlihat, pesan validasi mudah dipahami; uji aksesibilitas sebelum rilis.

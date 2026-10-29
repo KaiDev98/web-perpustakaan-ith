@@ -1,6 +1,6 @@
-# Fondasi backend Fase 1
+# Fondasi backend Fase 1 dan autentikasi Fase 2A
 
-NestJS/TypeScript strict, REST `/api/v1`, Drizzle ORM/mysql2, migrasi SQL berversi, dan MySQL 8.4 LTS. Hanya `/health` dan `/ready` yang aktif; endpoint bisnis dan autentikasi masih fase berikutnya.
+NestJS/TypeScript strict, REST `/api/v1`, Drizzle ORM/mysql2, migrasi SQL berversi, dan MySQL 8.4 LTS. Endpoint health, readiness, autentikasi admin, `/admin/me`, dan reset password terbatas SUPERADMIN sudah aktif. Endpoint konten dan permohonan masih menunggu fase berikutnya.
 
 ## Versi yang dipakai
 
@@ -10,7 +10,7 @@ Node.js **22.23.2 LTS** untuk verifikasi lokal (minimum generator Nest 12 pada l
 
 1. Dari root proyek, salin `.env.example` menjadi `.env`. Ganti **kedua** placeholder password dengan nilai lokal yang kuat; jangan commit `.env`. Set `DB_HOST`, `DB_PORT`, `DB_NAME`, dan `DB_USER` sesuai DB Anda. `MYSQL_ROOT_PASSWORD` hanya dipakai Docker Compose.
 2. Jalankan `docker compose up -d mysql` dari root proyek. Image dipin ke MySQL 8.4.13 dan hanya dipublikasikan pada `127.0.0.1:3307`. Volume `ith_mysql_data` mempertahankan data. Jangan gunakan `docker compose down -v` pada data yang ingin dipertahankan.
-3. Dari `backend/`, jalankan `npm ci` (atau `npm install` saat membuat lockfile). Jalankan `npm run db:check`, lalu `npm run db:migrate` pada database yang memang ditujukan untuk proyek ini. **Tinjau** SQL di `database/migrations/` sebelum migrasi; perintah tidak memakai `drizzle-kit push`. Migrasi kedua menghapus role `EDITOR`; script preflight menghentikan migrasi jika akun EDITOR masih ada agar tidak terjadi promosi hak otomatis.
+3. Dari `backend/`, jalankan `npm ci` (atau `npm install` saat membuat lockfile). Jalankan `npm run db:check`, lalu `npm run db:migrate` pada database yang memang ditujukan untuk proyek ini. **Tinjau** SQL di `database/migrations/` sebelum migrasi; perintah tidak memakai `drizzle-kit push`. Migrasi kedua membatasi role pada `SUPERADMIN` dan `ADMIN`; script preflight menghentikan migrasi jika akun dengan role lain masih ada agar tidak terjadi promosi hak otomatis.
 4. Jalankan `npm run build` lalu `npm start`. Untuk pengembangan dengan rebuild otomatis, `npm run start:dev` tersedia.
 5. Uji `GET http://127.0.0.1:3001/api/v1/health` (200) dan `GET http://127.0.0.1:3001/api/v1/ready` (200 jika DB siap, 503 jika tidak). Respons mengikuti `{ "data": ... }` atau `{ "error": ... }` dan mengandung header `X-Request-ID`.
 6. Bila `ENABLE_SWAGGER=true` pada development/test, dokumentasi interaktif ada di `http://127.0.0.1:3001/api-docs`; di production konfigurasi ini ditolak saat startup.
@@ -47,6 +47,13 @@ npm audit
 | `CORS_ORIGINS` | Daftar origin eksplisit dipisah koma; production hanya HTTPS, `*` ditolak |
 | `TRUST_PROXY_HOPS` | Jumlah hop proxy yang dipercaya, 0–3; gunakan 0 bila backend diakses langsung |
 | `ENABLE_SWAGGER` | `true` hanya di development/test, wajib `false` di production |
+| `ADMIN_ORIGIN` | Origin admin tepat satu; development `http://127.0.0.1:3002`, production HTTPS |
+
+## Bootstrap dua akun admin
+
+Setelah migrasi, operator memberikan `BOOTSTRAP_SUPERADMIN_EMAIL`, `BOOTSTRAP_SUPERADMIN_NAME`, `BOOTSTRAP_SUPERADMIN_PASSWORD`, `BOOTSTRAP_ADMIN_EMAIL`, `BOOTSTRAP_ADMIN_NAME`, dan `BOOTSTRAP_ADMIN_PASSWORD` melalui environment sementara pada terminal yang aman, kemudian menjalankan `npm run admin:bootstrap`. Password minimum 16 karakter; tidak ada default atau nilai di repo. Script melewati akun role yang sudah ada tanpa mengubah sandinya, menolak email konflik, dan memakai transaksi. Jangan menyimpan variabel bootstrap pada `.env` atau history shell. Hapus variabel sementara setelah selesai.
+
+Sesi admin memiliki idle expiry 30 menit dan absolute expiry 8 jam. Token mentah hanya dalam cookie HttpOnly (`Secure` dan prefix `__Host-` di production); MySQL hanya menyimpan SHA-256 token. Login, logout, dan reset password menggunakan token CSRF serta pemeriksaan Origin. Login dibatasi per IP pada proses tunggal; sebelum production perlu penyimpanan rate limit bersama jika backend dijalankan lebih dari satu instance.
 
 ## Troubleshooting
 

@@ -59,6 +59,6 @@ export class DatabaseService implements OnModuleDestroy {
     },
     DatabaseService,
   ],
-  exports: [DB, DatabaseService],
+  exports: [DB, DB_POOL, DatabaseService],
 })
 export class DatabaseModule {}

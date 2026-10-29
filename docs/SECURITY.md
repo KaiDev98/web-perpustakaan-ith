@@ -15,30 +15,33 @@ Browser publik dan admin adalah klien tidak tepercaya. Reverse proxy, NestJS, My
 
 ## Matriks role dan izin
 
-`✓` berarti diberi izin pada rancangan awal. Pemeriksaan dijalankan di server pada **setiap** endpoint admin, termasuk baca daftar/detail. SUPERADMIN tetap melewati autentikasi dan audit; role bukan jalan pintas untuk melewati guard.
+`✓` berarti izin diberikan. Pemeriksaan dijalankan di server pada **setiap** endpoint admin, termasuk baca daftar/detail dan perubahan status. Navigasi frontend mengikuti izin yang dikembalikan backend, tetapi tidak menjadi kontrol keamanan. SUPERADMIN tetap melewati autentikasi dan audit.
 
 | Izin | SUPERADMIN | ADMIN |
 | --- | :---: | :---: |
-| `content.read`, `content.manage` | ✓ | ✓ |
-| `navigation.read`, `navigation.manage` | ✓ | ✓ |
-| `resources.read`, `resources.manage` | ✓ | ✓ |
-| `slides.read`, `slides.manage` | ✓ | ✓ |
-| `media.read`, `media.manage` | ✓ | ✓ |
+| `content.read`, `content.manage` | ✓ | — |
+| `navigation.read`, `navigation.manage` | ✓ | — |
+| `resources.read`, `resources.manage` | ✓ | — |
+| `slides.read`, `slides.manage` | ✓ | — |
+| `media.read`, `media.manage` | ✓ | — |
+| `requests.summary.read` | ✓ | ✓ |
 | `requests.literacy.read`, `requests.literacy.status` | ✓ | ✓ |
 | `requests.clearance.read`, `requests.clearance.status` | ✓ | ✓ |
-| `settings.read`, `settings.manage` (kontak admin) | ✓ | ✓ |
-| `study_programs.read`, `study_programs.manage` | ✓ | ✓ |
+| `settings.read`, `settings.manage` (kontak admin) | ✓ | — |
+| `study_programs.read`, `study_programs.manage` | ✓ | — |
 | `users.read`, `users.manage` | ✓ | — |
 | `audit.read` | ✓ | — |
 | `admin.me`, `auth.logout` (akun sendiri) | ✓ | ✓ |
 
 `auth.login` hanya untuk akun admin aktif yang valid; `auth/csrf` hanya pada origin admin. Tidak ada endpoint registrasi. Pengelolaan pengguna tidak boleh membiarkan penghapusan/nonaktif superadmin aktif terakhir, promosi role tanpa izin `users.manage`, atau perubahan kredensial tanpa audit. Role/izin adalah allowlist di kode dan diuji; mengubah matriks memerlukan keputusan produk.
 
+Rencana pengujian setiap modul baru: SUPERADMIN dapat mengakses seluruh route sesuai izin; ADMIN hanya route ringkasan/daftar/detail/status dua permohonan; ADMIN menerima 403 pada route konten, menu, media, pengaturan, akun, dan audit; anonim menerima 401; manipulasi URL, ID, method, atau body tidak melewati guard; perubahan status menghasilkan riwayat dan audit pada satu transaksi. Route modul yang belum diimplementasikan belum dapat dinyatakan lulus.
+
 ## Threat model
 
 | Ancaman | Dampak | Mitigasi dan bukti yang harus diuji |
 | --- | --- | --- |
-| Brute force / credential stuffing admin | Pengambilalihan akun | Argon2id, rate limit per akun/IP dengan respons generik, pencatatan gagal login tanpa sandi, monitoring, sesi dicabut saat akun dinonaktifkan; uji burst dan lockout yang tidak mudah disalahgunakan. |
+| Brute force / credential stuffing admin | Pengambilalihan akun | Argon2id, rate limit login per IP pada satu proses dengan respons generik, pencatatan gagal login tanpa sandi, monitoring, sesi tidak berlaku saat akun dinonaktifkan; uji burst dan lockout yang tidak mudah disalahgunakan. Sebelum deployment multi-instance, pindahkan limiter ke penyimpanan bersama. |
 | Pencurian/fiksasi sesi, CSRF | Aksi admin tanpa izin | Token sesi acak opaque, hash di DB, rotasi saat login, idle/absolute expiry, cookie `__Host-`, `Secure`, `HttpOnly`, `SameSite=Lax`, tanpa `Domain`; CSRF token dan pemeriksaan Origin/Fetch Metadata untuk semua mutasi termasuk login; uji cross-origin dan logout. |
 | IDOR/BOLA pada ID permohonan | Kebocoran PII / perubahan status | Session + permission guard sebelum query, proyeksi DTO sesuai izin, tidak ada detail publik; uji anonim dan ID lain untuk list/detail/PATCH. |
 | SQL injection dan pencarian liar | Baca/ubah data, beban DB | Query terparameterisasi Drizzle, allowlist sort/filter, panjang `q` dan pagination terbatas; uji input metacharacter dan beban. |

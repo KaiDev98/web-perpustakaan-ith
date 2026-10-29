@@ -15,6 +15,7 @@ const envSchema = z.object({
   CORS_ORIGINS: z.string().default(''),
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(3).default(0),
   ENABLE_SWAGGER: z.enum(['true', 'false']).default('false'),
+  ADMIN_ORIGIN: z.string().default('http://127.0.0.1:3002'),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
@@ -47,6 +48,8 @@ export function validateEnvironment(input: Record<string, unknown>): AppEnv {
     throw new Error('Invalid environment variables: DB_PASSWORD placeholder must be replaced');
   }
   parseCorsOrigins(env.CORS_ORIGINS, env.NODE_ENV);
+  const adminOrigins = parseCorsOrigins(env.ADMIN_ORIGIN, env.NODE_ENV);
+  if (adminOrigins.length !== 1) throw new Error('Invalid environment variables: ADMIN_ORIGIN');
   if (env.NODE_ENV === 'production' && env.ENABLE_SWAGGER === 'true') {
     throw new Error('Invalid environment variables: ENABLE_SWAGGER must be false in production');
   }

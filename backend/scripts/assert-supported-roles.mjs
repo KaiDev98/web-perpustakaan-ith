@@ -17,9 +17,9 @@ try {
     [DB_NAME],
   );
   if (Number(tables[0].total) > 0) {
-    const [roles] = await connection.execute("SELECT COUNT(*) AS total FROM users WHERE role = 'EDITOR'");
+    const [roles] = await connection.execute("SELECT COUNT(*) AS total FROM users WHERE role NOT IN ('SUPERADMIN', 'ADMIN')");
     if (Number(roles[0].total) > 0) {
-      throw new Error('Migration stopped: EDITOR accounts exist. Review and resolve them manually; no automatic role promotion.');
+      throw new Error('Migration stopped: unsupported role accounts exist. Review and resolve them manually; no automatic role promotion.');
     }
   }
   process.stdout.write('Role migration preflight passed.\n');

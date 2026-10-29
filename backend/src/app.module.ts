@@ -6,6 +6,7 @@ import { ApiResponseInterceptor } from './common/api-response.interceptor.js';
 import { validateEnvironment } from './config/env.js';
 import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { HealthModule } from './health/health.module.js';
     }),
     DatabaseModule,
     HealthModule,
+    AuthModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ApiExceptionFilter },

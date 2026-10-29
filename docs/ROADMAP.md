@@ -8,13 +8,15 @@ Fase 0 telah di-commit dan dipush pada `main` (baseline README) dan `Niyato` (do
 | --- | --- | --- |
 | **0 — Audit dan perencanaan** | Audit repository/starter, kebutuhan, arsitektur, ERD/skema, API contract, matriks izin, threat model, rencana ini | Pengguna menyetujui Fase 0 dan izin commit/push hasilnya pada 29 Oktober 2026. Verifikasi branch/file remote tetap wajib. |
 | **1 — Fondasi backend** | `backend/` NestJS, konfigurasi environment, MySQL + Drizzle, migrasi awal berversi, `/api/v1/health`, `/api/v1/ready`, DTO validation, error handling, logging, OpenAPI dasar | Unit/integration untuk health, readiness sehat/tidak sehat, validasi, migrasi dari kosong; lint, typecheck, build, audit dependency. Tidak ada endpoint admin tanpa guard. |
-| **2 — Autentikasi dan admin** | Bootstrap superadmin, login/logout, sesi, CSRF, role/permission guard, audit autentikasi | Uji izin tiap role, session expiry/revoke, login CSRF, brute force, cookie/header di browser. |
+| **2 — Autentikasi dan admin** | Bootstrap dua akun awal, login/logout, sesi, CSRF, role/permission guard, audit autentikasi | Uji izin tiap role, session expiry/revoke, login CSRF, brute force, cookie/header di browser. |
 | **3 — Modul konten** | Profil, berita, slide, menu, sumber digital, repositori, panduan, pengaturan kontak dan media | Uji konten hanya terbit/aktif, sanitasi, URL, upload aman, dan permission per endpoint. |
 | **4 — Modul layanan** | Form literasi dan bebas pustaka; FORM PUSTAKAWAN; DAFTAR PEMOHON; status/history/audit | Integration/E2E untuk kedua formulir, kontak literasi `NULL`, status awal, izin PII, transaksi/status serentak. |
 | **5 — Frontend dan integrasi** | Website publik dan dashboard Next.js JavaScript/CSS, responsif, aksesibilitas, integrasi API | Uji browser, keyboard/screen reader, alur sukses/gagal, cache, CSRF, form tanpa akun pemustaka. |
 | **6 — Deployment** | Domain/TLS, konfigurasi produksi, migrasi aman, backup, monitoring, runbook recovery | Uji staging, restore backup, pemeriksaan keamanan, review konfigurasi dan persetujuan rilis. |
 
 Keputusan terbaru mempercepat fondasi frontend setelah backend autentikasi Fase 2A, sebelum seluruh modul konten dan formulir selesai. Website publik tetap tanpa login; admin memakai origin terpisah. Docker ditunda selama development, dan MySQL 8.4 lokal menjadi lingkungan integration test.
+
+Gerbang izin terbaru: uji bahwa `SUPERADMIN` dapat mengakses setiap modul setelah route modul tersedia; `ADMIN` hanya ringkasan, daftar/detail, dan perubahan status permohonan; akses langsung ke fungsi pengelolaan website memberi 403 dan akses anonim memberi 401. Uji manipulasi URL/ID/API dan audit perubahan status saat modul layanan diimplementasikan. Checkpoint Fase 2A/2B disetujui untuk commit/push setelah pemeriksaan akhir; Fase 3 memerlukan persetujuan terpisah.
 
 ## Urutan Fase 1 yang direkomendasikan
 
@@ -30,4 +32,4 @@ Keputusan terbaru mempercepat fondasi frontend setelah backend autentikasi Fase 
 - Penyedia hosting, domain, media storage, backup, dan pemilik operasional. Contoh domain pada dokumen arsitektur belum berarti tersedia.
 - Retensi data pribadi dan audit, pembatasan akses staf, serta prosedur permintaan penghapusan sesuai kebijakan ITH.
 - Aturan format WhatsApp yang pasti (nomor Indonesia saja atau internasional), ukuran maksimum file, dan batas rate limit berdasarkan trafik nyata.
-- Persetujuan commit/push saat ini hanya untuk Fase 0; perubahan Fase 1 disimpan lokal sampai laporan implementasi dievaluasi dan pengguna memberi persetujuan baru.
+- Catatan historis: Fase 0 dan Fase 1 sudah di-commit dan di-push. Checkpoint Fase 2A/2B disetujui setelah pemeriksaan akhir. Fase 3 tetap lokal sampai evaluasi pengguna.
