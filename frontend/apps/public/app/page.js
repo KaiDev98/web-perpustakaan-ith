@@ -12,7 +12,7 @@ export default async function Home() {
   return <>
     <div className="topbar"><span>Institut Teknologi Bacharuddin Jusuf Habibie</span><span>{settings?.service_hours || 'Informasi jam layanan sedang disiapkan'}</span></div>
     <header className="header"><Link className="brand" href="/"><span className="brand-mark">ITH</span><span><b>PERPUSTAKAAN</b><small>Institut Teknologi B. J. Habibie</small></span></Link><span className="header-note">Ruang belajar, riset, dan pengetahuan</span></header>
-    <nav className="nav" aria-label="Navigasi utama">{menu.map((item) => <div className="nav-item" key={item.id ?? item.label}><Link href={item.target_url}>{item.label}</Link>{item.children?.length > 0 && <div className="dropdown">{item.children.map(([label,href]) => <Link key={href} href={href}>{label}</Link>)}</div>}</div>)}</nav>
+    <nav className="nav" aria-label="Navigasi utama">{menu.map((item) => <div className="nav-item" key={item.id ?? item.label}><Link href={item.target_url}>{item.label}</Link>{item.children?.length > 0 && <details className="nav-submenu"><summary aria-label={`Buka submenu ${item.label}`}>▾</summary><div className="dropdown">{item.children.map(([label,href]) => <Link key={href} href={href}>{label}</Link>)}</div></details>}</div>)}</nav>
     <main>
       <HeroSlider slides={slides} siteName={siteName} />
       <section className="section"><div className="section-heading"><div><span className="eyebrow">TENTANG KAMI</span><h2>Perpustakaan ITH</h2></div><Link className="text-link" href="/profil">Selengkapnya ↗</Link></div><p className="intro">{profile?.body || 'Profil resmi perpustakaan akan tampil setelah diterbitkan oleh pengelola. Ini adalah contoh tampilan.'}</p></section>
