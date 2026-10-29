@@ -26,15 +26,15 @@ export default async function Dashboard() {
       <div className="sidebar-brand"><span className="mark">ITH</span><div><b>PERPUSTAKAAN</b><small>ADMIN PANEL</small></div></div>
       <p className="sidebar-label">NAVIGASI</p>
       <nav aria-label="Navigasi administrator">{visibleNavigation.map((item, index) =>
-        <a className={index === 0 ? 'active' : ''} href={item.permission.startsWith('requests.') ? '#permohonan' : '#cms'} key={item.label}><i aria-hidden="true">{item.icon}</i>{item.label}</a>)}</nav>
-      <div className="sidebar-bottom">Fondasi dashboard · modul layanan menyusul</div>
+        <a className={index === 0 ? 'active' : ''} href={item.href} key={item.label}><i aria-hidden="true">{item.icon}</i>{item.label}</a>)}</nav>
+      <div className="sidebar-bottom">Perpustakaan ITH · {user.role}</div>
     </aside>
     <main className="dashboard-main">
       <header><div><span className="kicker">DASHBOARD ADMIN</span><h1>Selamat datang, {user.display_name}</h1></div><Logout /></header>
       <section className="welcome"><span>AKSES TERVERIFIKASI</span><h2>Ruang kerja perpustakaan</h2><p>Anda masuk sebagai <strong>{user.role}</strong>. Akses yang tampil mengikuti izin dari backend.</p></section>
       <div className="dashboard-grid" id="layanan">
-        <article><span>01</span><h3>Literasi Informasi</h3><p>Ringkasan dan formulir akan tersedia saat API layanan selesai.</p></article>
-        <article><span>02</span><h3>Bebas Pustaka</h3><p>Daftar pemohon dan perubahan status akan tersedia saat API layanan selesai.</p></article>
+        <article><span>01</span><h3>Literasi Informasi</h3><p>Lihat permohonan masuk, detail, serta riwayat perubahan status.</p></article>
+        <article><span>02</span><h3>Bebas Pustaka</h3><p>Cari pemohon, filter status, dan proses permohonan layanan.</p></article>
         {superadmin && <article><span>03</span><h3>Konten website</h3><p>Kelola konten, menu, sumber digital, media, slider, dan pengaturan pada panel di bawah.</p></article>}
       </div>
       <RequestsPanel />

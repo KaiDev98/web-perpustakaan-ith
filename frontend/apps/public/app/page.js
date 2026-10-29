@@ -1,18 +1,18 @@
 import Link from 'next/link';
-import { getCms, mainMenu, resourceTypes } from './site-data';
+import { getCms, resolveMenu, resourceTypes } from './site-data';
 import HeroSlider from './hero-slider';
 export const dynamic = 'force-dynamic';
 export default async function Home() {
   const [settings, menuData, slidesData, newsData, resourcesData, profileData] = await Promise.all([
-    getCms('settings'), getCms('menu'), getCms('slides'), getCms('contents?content_type=NEWS&limit=3'), getCms('resources?limit=12'), getCms('contents?content_type=PROFILE&limit=1'),
+    getCms('settings'), getCms('menu?limit=50'), getCms('slides'), getCms('contents?content_type=NEWS&limit=3'), getCms('resources?limit=12'), getCms('contents?content_type=PROFILE&limit=1'),
   ]);
-  const menu = menuData?.items?.length ? menuData.items.filter((item) => !item.parent_id).sort((a,b) => a.position-b.position) : mainMenu;
+  const menu = resolveMenu(menuData);
   const slides = slidesData?.items ?? []; const news = newsData?.items ?? []; const resources = resourcesData?.items ?? []; const profile = profileData?.items?.[0];
   const siteName = settings?.website_name || 'Perpustakaan ITH';
   return <>
     <div className="topbar"><span>Institut Teknologi Bacharuddin Jusuf Habibie</span><span>{settings?.service_hours || 'Informasi jam layanan sedang disiapkan'}</span></div>
     <header className="header"><Link className="brand" href="/"><span className="brand-mark">ITH</span><span><b>PERPUSTAKAAN</b><small>Institut Teknologi B. J. Habibie</small></span></Link><span className="header-note">Ruang belajar, riset, dan pengetahuan</span></header>
-    <nav className="nav" aria-label="Navigasi utama">{menu.map((item) => { const children = menuData?.items?.filter((child) => child.parent_id === item.id).map((child) => [child.label,child.target_url]) ?? item.children ?? []; return <div className="nav-item" key={item.id ?? item.label}><Link href={item.target_url}>{item.label}</Link>{children.length > 0 && <div className="dropdown">{children.map(([label,href]) => <Link key={href} href={href}>{label}</Link>)}</div>}</div>; })}</nav>
+    <nav className="nav" aria-label="Navigasi utama">{menu.map((item) => <div className="nav-item" key={item.id ?? item.label}><Link href={item.target_url}>{item.label}</Link>{item.children?.length > 0 && <div className="dropdown">{item.children.map(([label,href]) => <Link key={href} href={href}>{label}</Link>)}</div>}</div>)}</nav>
     <main>
       <HeroSlider slides={slides} siteName={siteName} />
       <section className="section"><div className="section-heading"><div><span className="eyebrow">TENTANG KAMI</span><h2>Perpustakaan ITH</h2></div><Link className="text-link" href="/profil">Selengkapnya ↗</Link></div><p className="intro">{profile?.body || 'Profil resmi perpustakaan akan tampil setelah diterbitkan oleh pengelola. Ini adalah contoh tampilan.'}</p></section>
