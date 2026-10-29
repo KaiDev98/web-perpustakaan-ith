@@ -1,6 +1,6 @@
 # Rancangan database MySQL
 
-Status: model konseptual Fase 0; belum ada migrasi yang dijalankan. Target MySQL 8.4 LTS, InnoDB, `utf8mb4`, waktu UTC (`DATETIME(3)`). Semua ID internal `BIGINT UNSIGNED` auto increment kecuali bila dinyatakan lain. Nama kolom menggunakan `snake_case`. Relasi memakai FK fisik dan perilaku penghapusan konservatif (`RESTRICT` untuk data historis). Tipe final ditinjau saat menulis migrasi pertama.
+Status: skema TypeScript Fase 1 di `backend/src/database/schema.ts` dan migrasi awal SQL berversi di `database/migrations/0000_amusing_the_hood.sql`. Target MySQL 8.4 LTS, InnoDB, `utf8mb4`, waktu UTC (`DATETIME(3)`). Semua ID internal `BIGINT UNSIGNED` auto increment kecuali bila dinyatakan lain. Nama kolom menggunakan `snake_case`. Relasi memakai FK fisik dan perilaku penghapusan konservatif (`RESTRICT` untuk data historis). Migrasi ini telah diterapkan pada MySQL 8.4.13 lokal yang baru/kosong dan diperiksa melalui `npm run test:db`.
 
 ## ERD
 
@@ -136,6 +136,10 @@ CHECK (previous_status <> new_status) -- request_status_history
 Kolom kontak literasi tetap nullable tanpa constraint `at least one contact`. `clearance_requests.nim` bukan `UNIQUE` dan bukan FK ke tabel anggota. FK ke program studi memakai `ON DELETE RESTRICT`; perubahan nama/nonaktif program tidak merusak permohonan lama. Indeks dan constraint ini harus dicek pada MySQL target menggunakan integration test, bukan diasumsikan dari definisi ORM saja.
 
 ## Aturan transaksi dan migrasi
+
+Migrasi awal hasil Drizzle memuat 13 tabel domain, 11 FK, 23 indeks sekunder eksplisit (termasuk 5 unik), dan 3 CHECK. Verifikasi `information_schema` pada MySQL 8.4.13 menunjukkan **13 tabel domain + 1 ledger migrasi, 11 FK, 24 indeks sekunder** (23 eksplisit dan 1 yang dibuat MySQL untuk FK), 3 CHECK, serta database `utf8mb4`/`utf8mb4_0900_ai_ci`. Kontak literasi nullable, status kedua permohonan default `PROSES`, dan ledger memuat satu migrasi. Konfigurasi Docker mematok server `utf8mb4`/`utf8mb4_0900_ai_ci` dan zona waktu `+00:00`; instalasi MySQL alternatif harus disetel setara. `drizzle-kit check` memeriksa berkas migrasi; `drizzle-kit migrate` menerapkannya tanpa drop otomatis.
+
+Uji pertama pada database lokal `ith_library` berhenti setelah 6 FK karena dua nama constraint otomatis melebihi batas 64 karakter MySQL. Schema diberi nama FK eksplisit yang pendek dan migrasi awal dibuat ulang sebelum commit. Database parsial **tidak dihapus**; uji ulang memakai database baru `ith_library_v1` yang dipastikan memiliki 0 tabel sebelum migrasi. Nama database tersebut hanya bukti pengujian lokal, bukan nama wajib produksi.
 
 - `POST` publik menetapkan `PROSES` di service, bukan mengambil `status` dari body. Database juga memberi default sebagai lapisan cadangan. Kontak literasi di-trim, kosong menjadi `NULL`, nilai yang terisi divalidasi lalu dinormalisasi secara konsisten.
 - Perubahan status mengunci baris permohonan di transaksi, membandingkan status lama, memperbarui bila berbeda, menulis satu `request_status_history`, dan menulis satu `audit_logs`; semuanya commit/rollback bersama. Permintaan status sama bersifat idempotent dan tidak membuat riwayat palsu.

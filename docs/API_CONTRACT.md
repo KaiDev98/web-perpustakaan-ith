@@ -1,11 +1,12 @@
 # Kontrak REST API v1
 
-Status: rancangan; endpoint belum diimplementasikan. Base path `/api/v1`; JSON UTF-8 dan tanggal ISO 8601 UTC. OpenAPI/Swagger akan dihasilkan dari DTO/controller pada fase implementasi dan diverifikasi terhadap contoh ini. Semua input tidak dikenal ditolak (`whitelist` + `forbidNonWhitelisted`), termasuk `status` pada POST publik.
+Status: **hanya `GET /health` dan `GET /ready` sudah diimplementasikan pada Fase 1**. Seluruh endpoint bisnis/admin di bawah masih kontrak rencana, bukan route aktif. Base path `/api/v1`; JSON UTF-8 dan tanggal ISO 8601 UTC. OpenAPI/Swagger saat ini hanya memuat dua route aktif. Global ValidationPipe memakai `whitelist` + `forbidNonWhitelisted`; DTO bisnis baru dikerjakan pada fase terkait.
 
 ## Format umum
 
 - Sukses: `{ "data": ... }`; daftar memakai `{ "data": [...], "meta": { "page": 1, "limit": 20, "total": 42 } }`. `limit` dibatasi server.
-- Error: `{ "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [...] } }`; pesan tidak membocorkan SQL, stack trace, atau data pribadi.
+- Error: `{ "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [...] } }`; `details` hanya ada untuk validasi DTO. Pesan tidak membocorkan SQL, stack trace, atau data pribadi.
+- Tiap respons API aktif memuat header `X-Request-ID` (UUID acak server). Error 400 pada body JSON invalid, field DTO invalid/tambahan, dan 413 pada body melebihi batas. Untuk route yang belum ada, 404 aman tanpa mencerminkan URL/query pengguna.
 - `400` input/validasi, `401` belum login, `403` tidak berizin/CSRF, `404` tidak ada, `409` konflik, `429` rate limit, `503` dependensi penting tidak siap, dan `500` kegagalan server. ID path harus integer positif dan tidak mengesampingkan pemeriksaan izin.
 - Endpoint admin tidak boleh di-cache (`Cache-Control: no-store`). Respons publik hanya memuat field yang didaftarkan untuk publik. Tidak ada endpoint publik untuk daftar/detail permohonan.
 
@@ -13,8 +14,8 @@ Status: rancangan; endpoint belum diimplementasikan. Base path `/api/v1`; JSON U
 
 | Method & path | Respons / fungsi |
 | --- | --- |
-| `GET /health` | Status minimal tanpa detail infrastruktur |
-| `GET /ready` | `200` bila koneksi database siap; `503` bila tidak siap, tanpa detail kredensial/konfigurasi |
+| `GET /health` **(aktif)** | `200 {"data":{"status":"ok"}}`, independen dari DB |
+| `GET /ready` **(aktif)** | `200 {"data":{"status":"ready"}}` bila query DB berhasil; `503 {"error":{"code":"SERVICE_UNAVAILABLE","message":"Layanan belum siap."}}` bila gagal |
 | `GET /public/navigation` | Menu/submenu aktif berurutan |
 | `GET /public/settings` | Nama institusi, WhatsApp admin, email admin saja; tidak ada pengaturan rahasia |
 | `GET /public/slides` | Slide aktif dan metadata media yang layak publik |

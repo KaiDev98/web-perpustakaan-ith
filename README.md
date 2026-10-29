@@ -1,5 +1,7 @@
 # Website Perpustakaan ITH
 
-Repositori perencanaan website informasi Perpustakaan Institut Teknologi Bacharuddin Jusuf Habibie. Saat ini hanya Fase 0 (audit dan perencanaan) yang dikerjakan. Belum ada aplikasi, migrasi, database, atau deployment yang berjalan.
+Website informasi dan layanan permohonan Perpustakaan Institut Teknologi Bacharuddin Jusuf Habibie. Branch `Niyato` memuat dokumen Fase 0 dan pekerjaan **fondasi backend Fase 1** yang masih dalam evaluasi lokal. Endpoint bisnis, autentikasi admin, serta frontend belum diimplementasikan.
 
-Mulai dari [CODEX_START_HERE.md](CODEX_START_HERE.md). Spesifikasi ada di [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md), rancangan sistem di [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), dan urutan pekerjaan di [docs/ROADMAP.md](docs/ROADMAP.md).
+Mulai dari [CODEX_START_HERE.md](CODEX_START_HERE.md), [kebutuhan](docs/REQUIREMENTS.md), [arsitektur](docs/ARCHITECTURE.md), dan [roadmap](docs/ROADMAP.md). Petunjuk menjalankan API/MySQL ada di [backend/README.md](backend/README.md).
+
+Fase 1 telah mendapat izin commit dan push pada branch `Niyato`. Jangan memasukkan `.env`, data MySQL, secrets, log, atau `node_modules` ke Git.

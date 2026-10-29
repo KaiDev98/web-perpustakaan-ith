@@ -2,6 +2,8 @@
 
 Fase berjalan berurutan. Keluaran Fase 0 adalah dokumen, bukan sistem siap pakai. Waktu/durasi ditetapkan setelah kapasitas tim, konten resmi, dan infrastruktur diketahui.
 
+Fase 0 telah di-commit dan dipush pada `main` (baseline README) dan `Niyato` (dokumen), diverifikasi melalui GitHub pada 29 Oktober 2026. Fondasi backend Fase 1 telah dibangun dan diuji lokal pada MySQL 8.4.13; pengguna menyetujui commit/push Fase 1 pada 29 Oktober 2026. Pengujian Docker ditunda oleh keputusan pengguna.
+
 | Fase | Keluaran utama | Gerbang verifikasi sebelum lanjut |
 | --- | --- | --- |
 | **0 — Audit dan perencanaan** | Audit repository/starter, kebutuhan, arsitektur, ERD/skema, API contract, matriks izin, threat model, rencana ini | Pengguna menyetujui Fase 0 dan izin commit/push hasilnya pada 29 Oktober 2026. Verifikasi branch/file remote tetap wajib. |

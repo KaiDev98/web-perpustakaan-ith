@@ -14,7 +14,7 @@ flowchart LR
   N --> S[Media storage privat]
 ```
 
-`frontend/` berisi satu proyek Next.js JavaScript/CSS dengan segmen publik dan admin, dibangun/dihost pada origin berbeda menurut konfigurasi. `backend/` berisi NestJS TypeScript yang memisahkan modul `auth`, `admin`, `public-content`, `resources`, `media`, `literacy-requests`, `clearance-requests`, `settings`, dan `health`. `database/` menampung artefak migrasi/diagram; `scripts/` untuk bootstrap/operasional; `.github/` untuk CI kelak. Controller tidak berisi UI, dan komponen Next.js tidak mengakses MySQL.
+`frontend/` kelak berisi satu proyek Next.js JavaScript/CSS dengan segmen publik dan admin, dibangun/dihost pada origin berbeda menurut konfigurasi. **Fase 1 saat ini hanya membangun `backend/`**: `AppModule`, `ConfigModule`, `DatabaseModule`, `HealthModule`, serta common response/error/request logging. Modul `auth`, `admin`, `public-content`, `resources`, `media`, `literacy-requests`, `clearance-requests`, dan `settings` masih rancangan fase berikutnya. `database/migrations/` menampung migrasi SQL dan snapshot Drizzle. Controller tidak berisi UI, dan komponen Next.js kelak tidak mengakses MySQL.
 
 Contoh origin produksi yang **belum dianggap tersedia**: `https://library.ith.ac.id` (publik), `https://admin.library.ith.ac.id` (admin), dan bila diperlukan `https://api.library.ith.ac.id` (akses API publik). Reverse proxy meneruskan `/api/v1` pada origin masing-masing ke NestJS. Sesi admin hanya melalui origin admin, sehingga cookie host-only `__Host-ith_admin` tidak perlu dibagikan lintas subdomain. Route admin di origin publik maupun API publik ditutup pada lapisan proxy dan tetap dijaga oleh NestJS. Domain, TLS, dan topologi aktual diputuskan pada Fase 6.
 
@@ -38,5 +38,5 @@ REST JSON memakai `/api/v1`, DTO NestJS dan validasi server, OpenAPI/Swagger yan
 
 - Tanggal/waktu disimpan UTC dengan presisi milidetik; UI menampilkan zona waktu yang dikonfigurasi (default institusi perlu dipastikan).
 - Konten publik dan data pribadi dipisah pada service, DTO respons, dan kebijakan cache (`no-store` untuk seluruh data admin/form). Tidak ada HTML mentah dari editor tanpa sanitasi/allowlist.
-- Liveness `/api/v1/health` hanya menunjukkan proses berjalan. Readiness `/api/v1/ready` diperkenalkan pada Fase 1 untuk memeriksa koneksi database; respons publiknya hanya status siap/tidak siap tanpa kredensial, konfigurasi, atau rincian infrastruktur.
+- Liveness `/api/v1/health` hanya menunjukkan proses berjalan. Readiness `/api/v1/ready` memeriksa query `SELECT 1` melalui pool MySQL; respons publiknya hanya status siap/tidak siap tanpa kredensial, konfigurasi, atau rincian infrastruktur. Pool dibuat melalui dependency injection, memakai timeout dan ditutup saat shutdown.
 - Backup terenkripsi dan uji restore dijadwalkan sebelum produksi. Retensi permohonan/audit membutuhkan keputusan institusi; tidak diasumsikan tanpa batas.

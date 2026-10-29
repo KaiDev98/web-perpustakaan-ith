@@ -1,6 +1,13 @@
 # Keamanan dan kontrol akses
 
-Status: threat model dan checklist Fase 0; kontrol belum diimplementasikan atau diuji. Tidak ada klaim keamanan mutlak.
+Status: threat model Fase 0 dan baseline Fase 1. Kontrol autentikasi/otorisasi admin serta form bisnis **belum** diimplementasikan; tidak ada klaim keamanan mutlak.
+
+## Baseline Fase 1 yang sudah ada
+
+- Validasi environment startup dan larangan Swagger pada production; CORS origin eksplisit; `TRUST_PROXY_HOPS` numerik, bukan percaya semua proxy.
+- Helmet headers, batas body JSON/urlencoded, respons error generik, request ID acak, dan log JSON berisi method, pola route, status, durasi, serta kategori error. Body, query string, cookie, token, dan password tidak dicatat.
+- Pool MySQL dengan timeout/readiness dan cleanup. SQL migrasi berversi, FK/constraint/indeks disiapkan; verifikasi di database nyata dilaporkan terpisah.
+- `npm audit --omit=dev` menemukan **0** kerentanan. Audit seluruh lockfile menemukan 4 advisory **moderate** melalui `drizzle-kit` → `@esbuild-kit/esm-loader` → `esbuild` lama, semuanya dependency development. `npm audit fix --force` menyarankan downgrade Drizzle Kit yang memutus jalur migrasi, sehingga tidak diterapkan. CLI migrasi hanya dijalankan lokal/CI dan tidak diekspos sebagai layanan web; temuan tetap risiko terbuka sampai tersedia perbaikan yang kompatibel.
 
 ## Batas kepercayaan dan aset
 
@@ -45,6 +52,8 @@ Browser publik dan admin adalah klien tidak tepercaya. Reverse proxy, NestJS, My
 
 ## Checklist implementasi dan verifikasi
 
+Daftar berikut adalah gerbang keamanan lintas fase menuju produksi. Kontrol baseline Fase 1 di atas sudah diuji, tetapi item yang memerlukan autentikasi, formulir, penyimpanan media, atau deployment tetap terbuka.
+
 - [ ] Pin dependensi yang didukung; jalankan dependency audit dan tindak lanjuti temuan sebelum rilis.
 - [ ] Argon2id dengan parameter yang diuji pada hardware target; bootstrap superadmin satu kali dari kanal operator yang aman, tanpa sandi default atau output secret.
 - [ ] Sesi server-side memakai token acak kuat dan hash token tersimpan; revoke logout/nonaktif pengguna; izin diperiksa per rute.
@@ -54,6 +63,7 @@ Browser publik dan admin adalah klien tidak tepercaya. Reverse proxy, NestJS, My
 - [ ] Semua akses PII hanya melalui izin yang tepat; `no-store`; tidak ada data pribadi dalam log/error/analytics yang tidak diperlukan.
 - [ ] Audit login, perubahan konten penting, pengaturan, pengguna, dan status; transaksi status/history/audit atomik; jejak audit terlindung dari edit biasa.
 - [ ] Backup terenkripsi, prosedur recovery dan uji restore, monitoring, dan respons insiden sebelum produksi.
+- [ ] Pisahkan akun migrasi berizin DDL dari akun runtime dengan hak minimum di produksi; batasi akses MySQL ke jaringan internal.
 - [ ] Unit/integration/E2E untuk otorisasi, CSRF, input, workflow, serta pemeriksaan keamanan manual pada staging.
 - [ ] Institusi menentukan retensi permohonan, audit, dan backup; mekanisme penghapusan/anonimisasi mengikuti keputusan tersebut.
 
