@@ -5,7 +5,9 @@
 node_modules/
 .next/
 dist/
+dist-test/
 coverage/
 *.log
 uploads/
 backups/
+.local/
