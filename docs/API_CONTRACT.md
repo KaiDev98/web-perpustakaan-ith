@@ -110,3 +110,7 @@ Pencarian `q` dibatasi panjangnya dan memakai query terparameterisasi; tidak ada
 Semua `POST/PATCH/DELETE` admin membutuhkan CSRF dan audit aksi penting. Endpoint `DELETE` tidak boleh menghapus data historis permohonan atau jejak audit. Detail payload konten/menu/media ditetapkan sebagai DTO/OpenAPI pada fase modul terkait; izin dan batas data di atas adalah kontrak awal.
 
 **Seluruh endpoint pada bagian konten dan konfigurasi hanya untuk `SUPERADMIN`.** `ADMIN` harus menerima HTTP 403 pada akses API langsung, termasuk melalui ID/URL yang dimodifikasi. Pengunjung tanpa sesi menerima HTTP 401. Navigasi frontend mengikuti daftar izin dari `GET /admin/me`.
+
+## Implementasi lokal Fase 3 (belum di-commit)
+
+Backend menyediakan `GET /public/contents`, `GET /public/contents/:id`, `GET /public/menu`, `GET /public/resources`, `GET /public/slides`, `GET /public/settings`, dan `GET /public/media/:id`. Daftar publik membatasi konten terbit dan entri aktif. Admin CMS menggunakan `/admin/cms/contents`, `/admin/cms/menu`, `/admin/cms/resources`, `/admin/cms/slides`, `/admin/cms/settings`, serta `GET/POST/DELETE /admin/cms/media`. Mutasi memerlukan sesi SUPERADMIN dan CSRF. Isi `body` konten berupa teks biasa; HTML ditolak. Penghapusan konten terbit memerlukan penarikan publikasi dahulu. Upload sementara menerima PNG, JPEG, dan WebP hingga 5 MiB berdasarkan MIME dan signature; dokumen panduan belum dapat diunggah.

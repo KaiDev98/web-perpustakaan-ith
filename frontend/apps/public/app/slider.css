@@ -1,0 +1,1 @@
+.slide-dots{display:flex;gap:8px;margin-top:30px}.slide-dots button{border:1px solid #c9e6d4;background:transparent;color:#fff;border-radius:50%;width:32px;height:32px;cursor:pointer}.slide-dots button[aria-current=true]{background:#f6c862;color:#164337;border-color:#f6c862}

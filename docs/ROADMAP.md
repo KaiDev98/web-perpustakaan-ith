@@ -1,5 +1,7 @@
 # Roadmap dan gerbang keputusan
 
+Status kerja lokal Fase 3: fondasi API CMS untuk konten/profil/berita/panduan, menu, sumber digital, slider, pengaturan, dan gambar sedang dikembangkan. Pengujian dan audit akhir menentukan acceptance; perubahan ini belum mendapat persetujuan commit/push.
+
 Fase berjalan berurutan. Keluaran Fase 0 adalah dokumen, bukan sistem siap pakai. Waktu/durasi ditetapkan setelah kapasitas tim, konten resmi, dan infrastruktur diketahui.
 
 Fase 0 telah di-commit dan dipush pada `main` (baseline README) dan `Niyato` (dokumen), diverifikasi melalui GitHub pada 29 Oktober 2026. Fondasi backend Fase 1 telah dibangun dan diuji lokal pada MySQL 8.4.13; pengguna menyetujui commit/push Fase 1 pada 29 Oktober 2026. Pengujian Docker ditunda oleh keputusan pengguna.

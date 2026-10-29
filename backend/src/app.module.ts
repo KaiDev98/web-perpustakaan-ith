@@ -7,6 +7,7 @@ import { validateEnvironment } from './config/env.js';
 import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { CmsModule } from './cms/cms.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module.js';
     DatabaseModule,
     HealthModule,
     AuthModule,
+    CmsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ApiExceptionFilter },

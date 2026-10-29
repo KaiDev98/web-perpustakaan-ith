@@ -8,13 +8,19 @@ const accounts = [
   { role: 'ADMIN', prefix: 'BOOTSTRAP_ADMIN' },
 ];
 async function main() {
+if (process.env.BOOTSTRAP_ONLY && process.env.BOOTSTRAP_ONLY !== 'SUPERADMIN') {
+  process.stderr.write('Invalid BOOTSTRAP_ONLY selection.\n');
+  process.exitCode = 1;
+  return;
+}
+const selectedAccounts = process.env.BOOTSTRAP_ONLY === 'SUPERADMIN' ? accounts.slice(0, 1) : accounts;
 const connection = await mysql.createConnection({
   host: process.env.DB_HOST, port: Number(process.env.DB_PORT), database: process.env.DB_NAME,
   user: process.env.DB_USER, password: process.env.DB_PASSWORD, connectTimeout: 5000,
 });
 try {
   await connection.beginTransaction();
-  for (const account of accounts) {
+  for (const account of selectedAccounts) {
     const [existing] = await connection.execute('SELECT id FROM users WHERE role = ? LIMIT 1 FOR UPDATE', [account.role]);
     if (existing.length) {
       process.stdout.write(`${account.role}: already exists; unchanged.\n`);

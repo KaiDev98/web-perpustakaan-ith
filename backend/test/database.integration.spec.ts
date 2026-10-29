@@ -86,13 +86,13 @@ test('MySQL 8.4 migration matches 13-table foundation', async () => {
     const [migrationRows] = await pool.query<Array<{ total: number }> & mysql.RowDataPacket[]>(
       'SELECT COUNT(*) AS total FROM __drizzle_migrations',
     );
-    assert.equal(migrationRows[0]?.total, 2);
+    assert.equal(migrationRows[0]?.total, 3);
     const [roleRows] = await pool.query<Array<{ column_type: string }> & mysql.RowDataPacket[]>(
       "SELECT column_type AS column_type FROM information_schema.columns WHERE table_schema = ? AND table_name = 'users' AND column_name = 'role'",
       [process.env.DB_NAME],
     );
     assert.equal(roleRows[0]?.column_type, "enum('SUPERADMIN','ADMIN')");
-    process.stdout.write(`Verified MySQL schema: 13 domain tables, ${fkRows[0]?.total} foreign keys, ${indexRows[0]?.total} secondary indexes, ${checkRows[0]?.total} checks, 2 migrations\n`);
+    process.stdout.write(`Verified MySQL schema: 13 domain tables, ${fkRows[0]?.total} foreign keys, ${indexRows[0]?.total} secondary indexes, ${checkRows[0]?.total} checks, 3 migrations\n`);
   } finally {
     await pool.end();
   }

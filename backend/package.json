@@ -13,12 +13,13 @@
     "start:dev": "nest start --watch",
     "lint": "eslint src test drizzle.config.ts",
     "build:test": "tsc -p tsconfig.test.json",
-    "test": "npm run build:test && node --test dist-test/test/env.spec.js dist-test/test/health.spec.js dist-test/test/http.spec.js dist-test/test/auth.spec.js dist-test/test/permissions.spec.js",
+    "test": "npm run build:test && node --test dist-test/test/env.spec.js dist-test/test/health.spec.js dist-test/test/http.spec.js dist-test/test/auth.spec.js dist-test/test/permissions.spec.js dist-test/test/cms.spec.js",
     "test:db": "npm run build:test && node --test dist-test/test/database.integration.spec.js dist-test/test/auth.integration.spec.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/assert-supported-roles.mjs && drizzle-kit migrate",
     "db:check": "drizzle-kit check",
-    "admin:bootstrap": "node scripts/bootstrap-admins.mjs"
+    "admin:bootstrap": "node scripts/bootstrap-admins.mjs",
+    "cms:seed-navigation": "node scripts/seed-navigation.mjs"
   },
   "dependencies": {
     "@nestjs/common": "12.3.2",

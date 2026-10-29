@@ -41,6 +41,11 @@ export const siteSettings = mysqlTable('site_settings', {
   adminWhatsapp: varchar('admin_whatsapp', { length: 20 }),
   adminEmail: varchar('admin_email', { length: 254 }),
   institutionName: varchar('institution_name', { length: 255 }).notNull(),
+  websiteName: varchar('website_name', { length: 255 }),
+  address: text('address'),
+  serviceHours: varchar('service_hours', { length: 255 }),
+  socialLinks: json('social_links'),
+  footerText: text('footer_text'),
   updatedAt: updatedAt(),
   updatedBy: id('updated_by').references(() => users.id, { onDelete: 'restrict' }),
 }, (table) => [check('site_settings_singleton_chk', sql`${table.id} = 1`)]);
@@ -52,6 +57,7 @@ export const menuItems = mysqlTable('menu_items', {
   targetUrl: varchar('target_url', { length: 2048 }).notNull(),
   position: int('position', { unsigned: true }).notNull().default(0),
   isActive: boolean('is_active').notNull().default(true),
+  openNewTab: boolean('open_new_tab').notNull().default(false),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (table) => [index('menu_parent_position_idx').on(table.parentId, table.position, table.isActive)]);
