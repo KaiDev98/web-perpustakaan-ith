@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CmsModule } from './cms/cms.module.js';
+import { RequestsModule } from './requests/requests.module.js';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CmsModule } from './cms/cms.module.js';
     HealthModule,
     AuthModule,
     CmsModule,
+    RequestsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ApiExceptionFilter },

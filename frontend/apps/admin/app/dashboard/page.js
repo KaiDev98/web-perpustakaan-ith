@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Logout from './logout';
 import CmsPanel from './cms-panel';
+import RequestsPanel from './requests-panel';
 import { navigationForPermissions } from '../../lib/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -25,7 +26,7 @@ export default async function Dashboard() {
       <div className="sidebar-brand"><span className="mark">ITH</span><div><b>PERPUSTAKAAN</b><small>ADMIN PANEL</small></div></div>
       <p className="sidebar-label">NAVIGASI</p>
       <nav aria-label="Navigasi administrator">{visibleNavigation.map((item, index) =>
-        <a className={index === 0 ? 'active' : ''} href={item.permission.startsWith('requests.') ? '#layanan' : '#cms'} key={item.label}><i aria-hidden="true">{item.icon}</i>{item.label}</a>)}</nav>
+        <a className={index === 0 ? 'active' : ''} href={item.permission.startsWith('requests.') ? '#permohonan' : '#cms'} key={item.label}><i aria-hidden="true">{item.icon}</i>{item.label}</a>)}</nav>
       <div className="sidebar-bottom">Fondasi dashboard · modul layanan menyusul</div>
     </aside>
     <main className="dashboard-main">
@@ -36,6 +37,7 @@ export default async function Dashboard() {
         <article><span>02</span><h3>Bebas Pustaka</h3><p>Daftar pemohon dan perubahan status akan tersedia saat API layanan selesai.</p></article>
         {superadmin && <article><span>03</span><h3>Konten website</h3><p>Kelola konten, menu, sumber digital, media, slider, dan pengaturan pada panel di bawah.</p></article>}
       </div>
+      <RequestsPanel />
       {superadmin && <CmsPanel />}
     </main>
   </div>;

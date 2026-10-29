@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { getCms, mainMenu } from '../site-data';
+import RequestForm from '../request-form';
 export const dynamic = 'force-dynamic';
 const contentTypes = { 'profil': 'PROFILE', 'profil/visi-misi': 'VISION_MISSION', 'profil/struktur-organisasi': 'ORG_STRUCTURE', 'profil/staf': 'STAFF_PROFILE', 'layanan/penelitian': 'RESEARCH_SERVICE', 'panduan': 'GUIDE', 'panduan/repo': 'GUIDE', 'panduan/unggah-unduh': 'GUIDE', 'panduan/lainnya': 'GUIDE', 'berita': 'NEWS' };
 const titles = { 'profil':'Profil Perpustakaan','profil/visi-misi':'Visi & Misi','profil/struktur-organisasi':'Struktur Organisasi','profil/staf':'Profil Staf','berita':'Berita','repositori':'Repositori','repositori/repository-ith':'Repository ITH','repositori/indonesia-onesearch':'Indonesia OneSearch','e-journal':'E-Journal','e-book':'E-Book','layanan':'Layanan','layanan/penelitian':'Penelitian','layanan/literasi-informasi':'Literasi Informasi','layanan/bebas-pustaka':'Bebas Pustaka','panduan':'Panduan','panduan/repo':'Panduan Repo','panduan/unggah-unduh':'Unggah / Unduh Panduan','panduan/lainnya':'Panduan Lainnya' };
 export default async function Page({ params }) {
   const slug = (await params).slug.join('/');
   const type = contentTypes[slug];
-  const [content, resources, settings] = await Promise.all([type ? getCms(`contents?content_type=${type}&limit=20`) : null, getCms('resources?limit=50'), getCms('settings')]);
+  const [content, resources, settings, programs] = await Promise.all([type ? getCms(`contents?content_type=${type}&limit=20`) : null, getCms('resources?limit=50'), getCms('settings'), slug === 'layanan/bebas-pustaka' ? getCms('study-programs') : null]);
   const item = slug.startsWith('berita/') ? (await getCms('contents?content_type=NEWS&limit=50'))?.items?.find((entry) => entry.slug === slug.slice(7)) : null;
   const title = item?.title || titles[slug] || 'Halaman belum tersedia';
   const resourceType = slug.startsWith('repositori') ? (slug.endsWith('onesearch') ? 'INDONESIA_ONESEARCH' : 'REPOSITORY_ITH') : slug === 'e-journal' ? 'E_JOURNAL' : slug === 'e-book' ? 'E_BOOK' : null;
@@ -16,7 +17,7 @@ export default async function Page({ params }) {
     {item ? <article className="article"><span className="eyebrow">BERITA</span><h2>{item.title}</h2><p>{item.body}</p></article> : null}
     {content?.items?.length ? <div className="content-list">{content.items.map((entry) => <article className="article" key={entry.id}><h2>{entry.title}</h2><p>{entry.body}</p>{slug === 'berita' && <Link className="text-link" href={`/berita/${entry.slug}`}>Baca selengkapnya →</Link>}</article>)}</div> : null}
     {selectedResources.length ? <div className="cards">{selectedResources.map((entry) => <a className="card card-link" key={entry.id} href={entry.url} target="_blank" rel="noopener noreferrer"><h3>{entry.title}</h3><p>{entry.description}</p><span className="state">Buka sumber ↗</span></a>)}</div> : null}
-    {(isLiteracy || isClearance) ? <div className="service-form"><p className="notice">Pengiriman formulir belum aktif. Isian berikut hanya memperlihatkan informasi yang akan diminta.</p><form>{isLiteracy ? <><label>Nama *<input required name="nama" /></label><label>Judul *<input required name="judul" /></label><label>Deskripsi *<textarea required name="deskripsi" rows="5" /></label><label>WhatsApp (opsional)<input name="whatsapp" type="tel" /></label><label>Email (opsional)<input name="email" type="email" /></label></> : <><label>Nama *<input required name="nama" /></label><label>NIM *<input required name="nim" /></label><label>Program studi *<input required name="prodi" /></label><label>WhatsApp *<input required name="whatsapp" type="tel" /></label><label>Email *<input required name="email" type="email" /></label></>}</form><p>Kontak pustakawan: {settings?.admin_whatsapp || settings?.admin_email || 'Kontak resmi belum tersedia.'}</p></div> : null}
+    {(isLiteracy || isClearance) && <RequestForm kind={isLiteracy ? 'literacy' : 'clearance'} programs={programs ?? []} contact={settings?.admin_whatsapp || settings?.admin_email} />}
     {!item && !content?.items?.length && !selectedResources.length && !isLiteracy && !isClearance && <div className="empty"><span>✳</span><p>Konten resmi belum diterbitkan.</p><small>Bagian ini akan diperbarui oleh pengelola.</small></div>}
     </section></main><footer><b>PERPUSTAKAAN ITH</b><span>{settings?.admin_email || 'Kontak resmi sedang disiapkan'}</span></footer></>;
 }

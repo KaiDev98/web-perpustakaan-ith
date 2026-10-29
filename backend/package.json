@@ -19,7 +19,8 @@
     "db:migrate": "node scripts/assert-supported-roles.mjs && drizzle-kit migrate",
     "db:check": "drizzle-kit check",
     "admin:bootstrap": "node scripts/bootstrap-admins.mjs",
-    "cms:seed-navigation": "node scripts/seed-navigation.mjs"
+    "cms:seed-navigation": "node scripts/seed-navigation.mjs",
+    "requests:seed-programs": "node scripts/seed-study-programs.mjs"
   },
   "dependencies": {
     "@nestjs/common": "12.3.2",
